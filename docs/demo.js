@@ -31,10 +31,10 @@ function generateUuid() {
               break;
       }
   }
-  //return chars.join("");
-
-  return "testUuid";
+  return chars.join("");
 }
+
+const id = generateUuid();
 
 //const socket = new WebSocket("ws://localhost:7000/ws");
 const socket = new WebSocket("wss://kaiy-co-dev-sfu.an.r.appspot.com/ws");
@@ -93,7 +93,7 @@ socket.addEventListener('message', async (event) => {
     await pc.setLocalDescription(answer)
 
     //const id = uuid.v4()
-    const id = generateUuid();
+    //const id = generateUuid();
     log(`Sending answer`)
     console.log("Answer", id);
     socket.send(JSON.stringify({
@@ -113,7 +113,7 @@ const join = async () => {
   const offer = await pc.createOffer()
   await pc.setLocalDescription(offer)
   //const id = uuid.v4()
-  const id = generateUuid();
+  //const id = generateUuid();
 
   console.log("join", id);
 
@@ -137,7 +137,7 @@ const join = async () => {
         const offer = await pc.createOffer()
         await pc.setLocalDescription(offer)
         //const id = uuid.v4()
-        const id = generateUuid();
+        //const id = generateUuid();
         console.log("offer", id);
         socket.send(JSON.stringify({
           method: "offer",
