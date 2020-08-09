@@ -47,13 +47,28 @@ const socket = new WebSocket("wss://kaiy-co-dev-sfu.an.r.appspot.com/ws");
 
 const pc = new RTCPeerConnection(config)
 
+let usedObj = {};
+
 pc.ontrack = function ({ track, streams }) {
   if (track.kind === "video") {
     log("got track")
+
+    track.onmute = () => {
+      console.log("muted")
+      if( usedObj[track.id] ) {
+        let el = document.getElementById(track.id)
+        document.getElementById('remoteVideos').removeChild(el)
+      }
+    }
+
     track.onunmute = () => {
+      console.log("unmuted")
+      usedObj[track.id] = true;
+
       let el = document.createElement(track.kind)
       el.srcObject = streams[0]
       el.autoplay = true
+      el.id = track.id;
 
       document.getElementById('remoteVideos').appendChild(el)
     }
@@ -179,9 +194,15 @@ navigator.mediaDevices.getUserMedia({
 
 window.publish = () => {
   log("Publishing stream")
-  localStream.getTracks().forEach((track) => {
+  let tracks = localStream.getTracks();
+  tracks = tracks.splice( 0, 2 );
+
+  tracks.forEach((track) => {
     pc.addTrack(track, localStream);
   });
+
+  console.log(localStream);
+  console.log(localStream.getTracks());
 
   join()
 }
